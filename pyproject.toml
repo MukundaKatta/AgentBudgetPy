@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentbudget-py"
+version = "0.1.0"
+description = "Token + dollar budget caps for AI agents — raises BudgetExceededError when an LLM call would push past the ceiling. Zero deps, drop into any provider SDK. Python port of @mukundakatta/agentbudget."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Mukunda Katta", email = "mukunda.vjcs6@gmail.com" }]
+keywords = [
+  "ai",
+  "agent",
+  "llm",
+  "budget",
+  "tokens",
+  "cost",
+  "ceiling",
+  "rate-limit",
+  "spending",
+  "anthropic",
+  "openai",
+  "claude",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://github.com/MukundaKatta/AgentBudgetPy"
+Issues = "https://github.com/MukundaKatta/AgentBudgetPy/issues"
+Source = "https://github.com/MukundaKatta/AgentBudgetPy"
+"JS sibling" = "https://github.com/MukundaKatta/AgentBudget"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentbudget"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
