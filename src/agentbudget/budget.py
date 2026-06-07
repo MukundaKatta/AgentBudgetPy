@@ -8,6 +8,7 @@ pattern (you only know token counts after the response).
 
 from __future__ import annotations
 
+import math
 from typing import (
     Any,
     Awaitable,
@@ -129,14 +130,17 @@ class Budget:
         projected = self._project(usage)
         return self._first_violation(projected)
 
-    def assert_can_spend(self, *, model: str | None = None,
-                         input_tokens: int = 0,
-                         output_tokens: int = 0) -> None:
+    def assert_can_spend(
+        self, *, model: str | None = None, input_tokens: int = 0, output_tokens: int = 0
+    ) -> None:
         """Raise ``BudgetExceededError`` if the projected totals would breach.
 
         Useful when you can split the work — call this before scheduling more.
         """
-        usage: UsageInput = {"input_tokens": input_tokens, "output_tokens": output_tokens}
+        usage: UsageInput = {
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+        }
         if model is not None:
             usage["model"] = model
         projected = self._project(usage)
@@ -243,7 +247,7 @@ class Budget:
                 raise TypeError(
                     f"agentbudget: usage.{key} must be a non-negative finite number"
                 )
-            if v < 0 or v != v:  # noqa: PLR0124 — NaN check
+            if v < 0 or not math.isfinite(v):  # rejects negatives, NaN, and ±inf
                 raise TypeError(
                     f"agentbudget: usage.{key} must be a non-negative finite number"
                 )

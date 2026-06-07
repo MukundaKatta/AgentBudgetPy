@@ -126,9 +126,7 @@ def test_user_pricing_wins_over_default():
 def test_would_exceed_returns_cap_name_without_mutating():
     b = Budget(max_input_tokens=100)
     assert b.would_exceed({"input_tokens": 50, "output_tokens": 0}) is None
-    assert (
-        b.would_exceed({"input_tokens": 200, "output_tokens": 0}) == "input_tokens"
-    )
+    assert b.would_exceed({"input_tokens": 200, "output_tokens": 0}) == "input_tokens"
     assert b.totals["input_tokens"] == 0
 
 
@@ -225,7 +223,22 @@ def test_record_usage_rejects_bad_input():
     with pytest.raises(TypeError):
         b.record_usage({"input_tokens": float("nan"), "output_tokens": 0})
     with pytest.raises(TypeError):
+        b.record_usage({"input_tokens": float("inf"), "output_tokens": 0})
+    with pytest.raises(TypeError):
+        b.record_usage({"input_tokens": 0, "output_tokens": float("inf")})
+    with pytest.raises(TypeError):
         b.record_usage({"input_tokens": "lots", "output_tokens": 0})  # type: ignore[typeddict-item]
+
+
+def test_record_usage_rejects_infinity_without_mutating():
+    # Regression: float("inf") used to slip past validation and blow up with a
+    # low-level OverflowError inside the tally. It must raise TypeError up front
+    # and leave totals untouched.
+    b = Budget()
+    with pytest.raises(TypeError):
+        b.record_usage({"input_tokens": float("inf"), "output_tokens": 0})
+    assert b.totals["input_tokens"] == 0
+    assert b.totals["calls"] == 0
 
 
 # --- introspection -------------------------------------------------------

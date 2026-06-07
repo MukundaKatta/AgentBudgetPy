@@ -34,9 +34,7 @@ class BudgetExceededError(Exception):
         model: str | None = None,
     ) -> None:
         overshoot = attempted - limit
-        formatted = (
-            f"{overshoot:.4f}" if cap == "cost_usd" else f"{int(overshoot)}"
-        )
+        formatted = f"{overshoot:.4f}" if cap == "cost_usd" else f"{int(overshoot)}"
         message = (
             f"agentbudget: {cap} cap exceeded — limit {limit}, attempted {attempted} "
             f"(over by {formatted})"
